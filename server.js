@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const fs = require("fs");
 const path = require("path");
 const jwt = require("jsonwebtoken");
-const YahooFantasy = require("yahoo-fantasy");
 
 // Import typeDefs and resolvers
 const filePath = path.join(__dirname, "typeDefs.gql");
@@ -37,28 +36,6 @@ const getUser = async token => {
   }
 };
 
-// var yf = new YahooFantasy(
-//   process.env.YPN_CLIENT_ID,
-//   process.env.YPN_CLIENT_SECRET
-// );
-
-// // if a user has logged in (not required for all endpoints)
-// yf.setUserToken(process.env.YPN_CLIENT_ID, process.env.YPN_CLIENT_SECRET);
-
-// console.log("yf=", yf);
-
-// query a resource/subresource
-// yf.{resource}.{subresource} (
-// yf.{'fantasy/v2/player/223.p.5479'}.{''} (
-//   {possible argument(s)},
-//   function cb(err, data) {
-//     console.log('yf err,data=',err,data)
-//     // handle error
-//     // callback function
-//     // do your thing
-//   }
-// );
-
 // Create Apollo/GraphQL Server using typeDefs, resolvers, and context object
 const server = new ApolloServer({
   typeDefs,
@@ -76,3 +53,19 @@ const server = new ApolloServer({
 server.listen().then(({ url }) => {
   console.log(`Server listening on ${url}`);
 });
+
+// Test scraping
+const rp = require("request-promise");
+const $ = require("cheerio");
+const url =
+  "https://en.wikipedia.org/wiki/List_of_Presidents_of_the_United_States";
+
+rp(url)
+  .then(function(html) {
+    //success!
+    console.log($("big > a", html).length);
+    console.log($("big > a", html));
+  })
+  .catch(function(err) {
+    //handle error
+  });
